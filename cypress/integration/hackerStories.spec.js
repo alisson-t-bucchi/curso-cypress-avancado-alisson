@@ -25,9 +25,8 @@ describe('Hacker Stories', () => {
       })
 
       context('List of stories', () => {
-        it.only('shows the right data for all rendered stories', () => {
-          const stories = require('../fixtures/stories.json')
-
+        const stories = require('../fixtures/stories.json')
+        it('shows the right data for all rendered stories', () => {
           cy.get('.item')
             .first()
             .should('contain', stories.hits[0].title)
@@ -35,7 +34,7 @@ describe('Hacker Stories', () => {
             .and('contain', stories.hits[0].num_comments)
             .and('contain', stories.hits[0].points)
           cy.get(`.item a:contains(${stories.hits[0].title})`)
-          .should('have.attr', 'href', stories.hits[0].url)
+            .should('have.attr', 'href', stories.hits[0].url)
 
           cy.get('.item')
             .last()
@@ -44,7 +43,7 @@ describe('Hacker Stories', () => {
             .and('contain', stories.hits[1].num_comments)
             .and('contain', stories.hits[1].points)
           cy.get(`.item a:contains(${stories.hits[1].title})`)
-          .should('have.attr', 'href', stories.hits[1].url)
+            .should('have.attr', 'href', stories.hits[1].url)
         })
 
         it('shows only one stories after dimissing the first one', () => {
@@ -60,14 +59,97 @@ describe('Hacker Stories', () => {
         // and so, how can I test ordering?
         // This is why these tests are being skipped.
         // TODO: Find a way to test them out.
-        context.skip('Order by', () => {
-          it('orders by title', () => {})
+        context('Order by', () => {
+          it('orders by title', () => {
+            cy.get('.list-header-button:contains(Title)')
+              .as('titleHeader') // criação de uma "alias" com o uso do .as
+              .click()
 
-          it('orders by author', () => {})
+            cy.get('.item')
+              .first()
+              .should('be.visible')
+              .and('contain', stories.hits[0].title)
+            cy.get(`.item a:contains(${stories.hits[0].title})`)
+              .should('have.attr', 'href', stories.hits[0].url)
 
-          it('orders by comments', () => {})
+            cy.get('@titleHeader') // invocando o "alias" criado
+              .click()
 
-          it('orders by points', () => {})
+            cy.get('.item')
+              .first()
+              .should('be.visible')
+              .and('contain', stories.hits[1].title)
+            cy.get(`.item a:contains(${stories.hits[1].title})`)
+              .should('have.attr', 'href', stories.hits[1].url)
+
+            cy.get('@titleHeader')
+              .click()
+          })
+
+          it('orders by author', () => {
+            cy.get('.list-header-button:contains(Author)')
+              .as('authorHeader') // criação de uma "alias" com o uso do .as
+              .click()
+
+            cy.get('.item')
+              .first()
+              .should('be.visible')
+              .and('contain', stories.hits[0].author)
+
+            cy.get('@authorHeader') // invocando o "alias" criado
+              .click()
+
+            cy.get('.item')
+              .first()
+              .should('be.visible')
+              .and('contain', stories.hits[1].author)
+            cy.get('@authorHeader')
+              .click()
+          })
+
+          it('orders by comments', () => {
+            cy.get('.list-header-button:contains(Comments)')
+              .as('commentsHeader') // criação de uma "alias" com o uso do .as
+              .click()
+
+            cy.get('.item')
+              .first()
+              .should('be.visible')
+              .and('contain', stories.hits[1].num_comments)
+
+            cy.get('@commentsHeader') // invocando o "alias" criado
+              .click()
+
+            cy.get('.item')
+              .first()
+              .should('be.visible')
+              .and('contain', stories.hits[0].num_comments)
+              
+            cy.get('@commentsHeader')
+              .click()
+          })
+
+          it('orders by points', () => {
+            cy.get('.list-header-button:contains(Comments)')
+              .as('pointsHeader') // criação de uma "alias" com o uso do .as
+              .click()
+
+            cy.get('.item')
+              .first()
+              .should('be.visible')
+              .and('contain', stories.hits[1].points)
+
+            cy.get('@pointsHeader') // invocando o "alias" criado
+              .click()
+
+            cy.get('.item')
+              .first()
+              .should('be.visible')
+              .and('contain', stories.hits[0].points)
+
+            cy.get('@pointsHeader')
+              .click()
+          })
         })
       })
 
